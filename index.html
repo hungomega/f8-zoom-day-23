@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <!-- favicon -->
+    <link rel="shortcut icon" href="https://img.icons8.com/fluent/200/microsoft-todo-2019.png" type="image/x-icon">
+    <!-- css -->
+    <link rel="stylesheet" href="./style.css">
+    <!-- Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <div class="logo-icon"></div>
+                <span class="logo-text">F8 Todo</span>
+            </div>
+
+            <h1 class="header-title">Todo List</h1>
+
+            <div class="header-actions">
+                <button class="notification-btn">
+                    <i class="fa-solid fa-bell fa-icon"></i>
+                </button>
+                <div class="profile-avatar">
+                    <i class="fa-solid fa-user fa-icon"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Controls Section -->
+        <div class="controls">
+            <div class="search-container">
+                <label for="searchInput">
+                    <i class="fa-solid fa-magnifying-glass fa-icon search-icon"></i>
+                </label>
+                <input type="text" id="searchInput" class="search-input" placeholder="Search Task Here!">
+            </div>
+
+            <button class="add-btn">
+                <i class="fa-solid fa-plus fa-icon"></i>
+                Add New Task
+            </button>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab-list">
+                <button id="allTask" class="tab-button active">All Task</button>
+                <button id="activeTask" class="tab-button">Active Task</button>
+                <button id="completedTask" class="tab-button">Completed Task</button>
+            </div>
+        </div>
+
+        <!-- Task Grid -->
+        <div class="task-grid">
+        </div>
+    </main>
+
+    <!-- Add New Task Modal -->
+    <div class="modal-overlay" id="addTaskModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Add New Task</h2>
+                <button class="modal-close">
+                    <i class="fa-solid fa-xmark fa-icon"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="todo-app-form">
+                    <div class="form-group">
+                        <label class="form-label" for="taskTitle">Task Title *</label>
+                        <input name="taskTitle" type="text" id="taskTitle" class="form-input"
+                            placeholder="Enter task title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="taskDescription">Description</label>
+                        <textarea name="taskDescription" id="taskDescription" class="form-textarea"
+                            placeholder="Enter task description"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="taskCategory">Category</label>
+                        <select name="taskCategory" id="taskCategory" class="form-select">
+                            <option value="">Select category</option>
+                            <option value="meeting">Meeting</option>
+                            <option value="design">Design</option>
+                            <option value="development">Development</option>
+                            <option value="planning">Planning</option>
+                            <option value="client">Client Work</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="taskPriority">Priority</label>
+                        <select name="taskPriority" id="taskPriority" class="form-select">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                            <option value="urgent">Urgent</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Time Schedule</label>
+                        <div class="time-inputs">
+                            <div>
+                                <label class="form-label" for="startTime">Start Time</label>
+                                <input name="startTime" type="time" id="startTime" class="form-input">
+                            </div>
+                            <div>
+                                <label class="form-label" for="endTime">End Time</label>
+                                <input name="endTime" type="time" id="endTime" class="form-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="taskDate">Due Date</label>
+                        <input name="taskDate" type="date" id="taskDate" class="form-input">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="taskColor">Card Color</label>
+                        <select name="taskColor" id="taskColor" class="form-select">
+                            <option value="blue">Blue</option>
+                            <option value="purple">Purple</option>
+                            <option value="yellow">Yellow</option>
+                            <option value="pink">Pink</option>
+                            <option value="green">Green</option>
+                        </select>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="modal-cancel btn btn-secondary">Cancel</button>
+                        <button type="submit" class="modal-submit btn btn-primary">Create Task</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <template id="toastMessageTpl">
+        <!-- Font Awesome CDN -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+        <style>
+            h3,
+            p {
+                padding: 0;
+                margin: 0;
+            }
+
+            .toast {
+                display: flex;
+                width: 270px;
+                margin: 12px;
+                background-color: rgb(255, 255, 255);
+                box-shadow: 0 0 2px #b1b1b1;
+                border-radius: 4px;
+                padding: 6px 12px;
+                align-items: center;
+                animation: slideRightIn 0.3s ease, fadeOut 1s linear 3s forwards;
+            }
+
+            @keyframes slideRightIn {
+                from {
+                    transform: translateX(calc(100% + 12px));
+                }
+
+                to {
+                    transform: translateX(0);
+                }
+            }
+
+            @keyframes fadeOut {
+                to {
+                    opacity: 0;
+                }
+            }
+
+            /* .toast:has(> .success) {
+                background-color: rgb(214, 255, 214);
+            } */
+
+            .toast-icon {
+                transform: translateY(2px);
+                font-size: 0.9rem;
+                margin-right: 10px;
+            }
+
+            .toast-icon.success {
+                color: rgba(0, 128, 0, 0.62);
+            }
+
+            .toast-content {
+                flex-grow: 1;
+                font-size: 0.8rem;
+            }
+
+            .toast-close {
+                font-size: 1.3rem;
+                padding: 4px 4px 4px 8px;
+            }
+
+            .toast-close:hover {
+                opacity: 0.5;
+            }
+        </style>
+
+        <div class="toast">
+            <i class="toast-icon success fa-solid fa-circle-check"></i>
+            <p class="toast-content"></p>
+            <i class="toast-close success fa-solid fa-xmark"></i>
+        </div>
+    </template>
+
+    <!-- Toast Message -->
+    <div id="toast">
+    </div>
+
+    <script src="./toast-message.js"></script>
+    <script src="./main.js"></script>
+</body>
+
+</html>
